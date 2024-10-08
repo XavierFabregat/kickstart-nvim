@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -189,6 +189,13 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Keybinds to save buffer
+--
+vim.keymap.set('n', '<C-s>', ':w<CR>', { silent = true })
+vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { silent = true })
+
+vim.keymap.set('n', '<leader>e', ':Explore<CR>', { silent = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -836,6 +843,15 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'tokyonight-night'
+      vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'NormalNC', { bg = 'none' })
+      -- Make additional elements transparent
+      vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'TabLineFill', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'LineNr', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'none' })
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -917,19 +933,19 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -951,6 +967,42 @@ require('lazy').setup({
     },
   },
 })
+
+-- Set Neo-tree highlights for transparency adjustments
+-- Make Neo-tree background less transparent compared to full transparency
+local less_transparent_bg = '#1a1a1a' -- Example: Set a less transparent background color
+
+vim.api.nvim_set_hl(0, 'NeoTreeNormal', { bg = less_transparent_bg })
+vim.api.nvim_set_hl(0, 'NeoTreeNormalNC', { bg = less_transparent_bg })
+vim.api.nvim_set_hl(0, 'NeoTreeEndOfBuffer', { bg = less_transparent_bg })
+vim.api.nvim_set_hl(0, 'NeoTreeCursorLine', { bg = less_transparent_bg })
+vim.api.nvim_set_hl(0, 'NeoTreeTabActive', { bg = less_transparent_bg })
+vim.api.nvim_set_hl(0, 'NeoTreeTabInactive', { bg = less_transparent_bg })
+vim.api.nvim_set_hl(0, 'NeoTreeTabSeparatorActive', { bg = less_transparent_bg })
+vim.api.nvim_set_hl(0, 'NeoTreeTabSeparatorInactive', { bg = less_transparent_bg })
+
+vim.keymap.set('n', ':', '<Plug>(cmdpalette)')
+
+require('cmdpalette').setup {
+  win = {
+    height = 0.3,
+    width = 0.8,
+    border = 'rounded',
+    row_off = -2,
+    -- Title requires nvim-0.9 or higher.
+    title = 'Cmdpalette',
+    title_pos = 'center',
+  },
+  sign = {
+    text = ':',
+  },
+  buf = {
+    filetype = 'vim',
+    syntax = 'vim',
+  },
+  delete_confirm = true,
+  show_title = true,
+}
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
